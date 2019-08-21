@@ -1,0 +1,82 @@
+
+<div class="container" >
+       <div class="row" style="margin-top: 20px">
+       
+        <div class="column"></div>
+    <div class="column" style="text-align:center; " >
+        <h1>
+            La palabra secreta es {{ mascara }}
+        </h1>
+
+        <img
+            width="250"
+            alt="image"
+            src={{vidaImagen}}
+        >
+    </div>
+    <div class="column">
+    
+        <h3 style="text-align: right; float: right">Tiempo: {{timeLeft}}</h3>
+    </div>
+</div>
+    <h2 style="padding: 40px; text-align: center">{{mensaje}}</h2>
+
+    <div class="row" style="text-align:center">
+
+        <div
+            class="column"
+            style="min-width: 50%; max-height: 80px"
+        >
+            <label style="margin-right: 10px; margin-bottom: 20px;">Seleccione una letra</label>
+
+            <select
+                [(ngModel)]="selectedLetter"
+                
+            >
+                // value is a string or number
+
+                <option
+                    style="text-align: center"
+                    *ngFor="let obj of abecedario"
+                    [value]="obj"
+                >{{obj}}</option>
+            </select>
+
+            <br>
+
+            <button
+                *ngIf="juegoOn"            
+                (click)="game(selectedLetter)"
+                class="btn btn-primary"
+                role="button"
+                style="margin-right: 5px"
+            >probar suerte</button>
+
+            <button
+            *ngIf="juegoOff" 
+            (click)="reload()"
+            class="btn btn-primary"
+            role="button"
+            style="margin-right: 5px"
+        >volver a intentarlo</button>
+        </div>
+
+
+
+        <div
+            class="column"
+            style="min-width: 50%; text-align: left; max-height: 80px"
+        >
+            <h4>Vidas restantes: {{vidas}}</h4>
+            <br>
+            <h4>letras utilizadas: {{letrasUsadas}}</h4>
+
+            <a
+        routerLink="/"
+        class="btn btn-secondary"
+        role="button"
+        style="float: right;"
+    >Volver atras</a> 
+        </div>
+    </div>
+</div>
