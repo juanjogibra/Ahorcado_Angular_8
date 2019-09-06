@@ -9,6 +9,7 @@ import { ServicioPalabrasService } from '../servicio-palabras.service'
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css']
 })
+
 export class GameComponent implements OnInit {
 
  //constantes que determinan la ruta relativa y extension de las imagenes del juego del ahorcado 
@@ -24,27 +25,25 @@ URL_IMAGENES_EXT = ".jpg"
     private servicioPalabras: ServicioPalabrasService
     ) {
 
-    //Rellenamos en el constructor las letras que vamos a utilizar para el juego (minusculas de la a-z)
+     //Rellenamos en el constructor las letras que vamos a utilizar para el juego (minusculas de la a-z)
    for(let letter=0; letter<26; letter++) {
       this.abecedario[letter] = String.fromCharCode(97+letter)
     }     
-   }
-
-  
+   } 
 
    //Booleanos que controlan la aparicion o desaparicion de los botones de jugar y volver a intentar   
+  
   juegoOn = true;
   juegoOff = !this.juegoOn;
 
   //Definimos las variables del scope que van a interactuar con el DOM por medio del bindeado
 
-palabraoculta; 
+palabraoculta: string; 
 mascara;
 abecedario = [];
 vidas = 4;
 letrasUsadas = "";
 mensaje = "¿Qué desea hacer?";
-
 vidaImagen = this.URL_IMAGENES_PRE+"ahorcadoinicial"+this.URL_IMAGENES_EXT; //URL imagen cambiante durante los fallos en el juego
 
 
@@ -53,33 +52,19 @@ vidaImagen = this.URL_IMAGENES_PRE+"ahorcadoinicial"+this.URL_IMAGENES_EXT; //UR
 timeLeft: number = 90;
 interval;
 
-// número Random entre 0 y la longitud del array de palabras para el juego
-
-aleatorio = (Math.floor(Math.random() * (this.palabritas.palabrasJuego.length - 0 + 1)) + 0);
-
-
-ngOnInit() {  
-
-  
-     this.palabraoculta = this.palabritas.palabrasJuego[this.aleatorio]  
-
-    this.dibujarJuego(); //Al iniciar, ejecutamos el metodo dibujar
-    this.cuentaAtras();
-    
-    this.getPalabras
-   
+ngOnInit() {   
+  this.getPalabras(); //inicializamos el metodo que realiza un servicio GET y se trae todas las palabras del diccionario
   }
 
 //Creamos el método dibujar juego que, una vez elegida la palabra a adivinar, va a enmascararla y mostrarla oculta en el DOM
 
-dibujarJuego() {
- 
-  let temp = [...this.palabraoculta];  
-  for (let i=0; i<this.palabraoculta.length; i++) {   
+dibujarJuego(elegida: string) {
+  this.palabraoculta = elegida;
+  let temp = [...elegida];  
+  for (let i=0; i<elegida.length; i++) {   
    temp[i] = '-'
     }    
     this.mascara = temp.join("");
-
 }     
 
 //Metodo o función principal que se encarga de ejecutar todas las acciones del juego, una vez que pulsamos el boton de "probar suerte" (en el HTML)
@@ -105,9 +90,7 @@ dibujarJuego() {
    
       if(this.mascara == this.palabraoculta) { //Si la palabra de la mascara coincide con la palabra oculta, significa que hemos ganado. ¡HURRA!       
       this.gameOver(); //En tal caso, ejecutariamos la función de fin de juego
-      }
-      
-     
+      }    
   }  
 
   // Metodo que rellena el array de letras utilizadas durante el juego
@@ -144,13 +127,18 @@ switch(this.vidas) {
   }
 
   getPalabras() {
-    this.servicioPalabras.getPost().subscribe(
-      words=> {
-        console.log(words);
-        console.log(words)
-      }
-    )
-    
+    var palabraElegida: string;
+    this.servicioPalabras.getPost().subscribe((
+      words: string[] )=> {
+
+    //Numero aleatorio que usa la longitud de la consulta para elaborar una posicion en el array
+        let aleatorio = (Math.floor(Math.random() * (words.length - 0 + 1)) + 0); 
+     
+        palabraElegida = words[aleatorio];
+        this.dibujarJuego(palabraElegida); //Al iniciar, ejecutamos el metodo dibujar        
+        this.cuentaAtras(); // Iniciamos la cuenta atras del juego 
+      }      
+    )  
   }
 
   cuentaAtras() {
@@ -189,5 +177,4 @@ switch(this.vidas) {
   backClicked() {
     this._location.back();
   }
-
 }

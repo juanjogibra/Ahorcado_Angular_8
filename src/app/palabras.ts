@@ -1,4 +1,6 @@
+
 export class palabras {
+    
     palabrasJuego = [
         "superfluo",
         "inefable",
@@ -36,6 +38,6 @@ export class palabras {
         "aurora",
         "desenlace"
         
-    ];
+    ];  
 
 }
