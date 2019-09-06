@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {palabras} from '../palabras'
 import {Location} from '@angular/common';
 import { Router } from '@angular/router';
+import { ServicioPalabrasService } from '../servicio-palabras.service'
 
 @Component({
   selector: 'app-game',
@@ -17,13 +18,19 @@ URL_IMAGENES_EXT = ".jpg"
 
  palabritas: palabras = new palabras // Instanciamos la clase palabras, donde hallamos las palabras para jugar
 
-  constructor(private _location: Location, private route: Router) {
+  constructor(
+    private _location: Location, 
+    private route: Router, 
+    private servicioPalabras: ServicioPalabrasService
+    ) {
 
     //Rellenamos en el constructor las letras que vamos a utilizar para el juego (minusculas de la a-z)
    for(let letter=0; letter<26; letter++) {
       this.abecedario[letter] = String.fromCharCode(97+letter)
-    }
+    }     
    }
+
+  
 
    //Booleanos que controlan la aparicion o desaparicion de los botones de jugar y volver a intentar   
   juegoOn = true;
@@ -51,7 +58,6 @@ interval;
 aleatorio = (Math.floor(Math.random() * (this.palabritas.palabrasJuego.length - 0 + 1)) + 0);
 
 
-
 ngOnInit() {  
 
   
@@ -60,6 +66,7 @@ ngOnInit() {
     this.dibujarJuego(); //Al iniciar, ejecutamos el metodo dibujar
     this.cuentaAtras();
     
+    this.getPalabras
    
   }
 
@@ -133,7 +140,17 @@ switch(this.vidas) {
     this.gameOver();
     break;   
 
-}
+    }
+  }
+
+  getPalabras() {
+    this.servicioPalabras.getPost().subscribe(
+      words=> {
+        console.log(words);
+        console.log(words)
+      }
+    )
+    
   }
 
   cuentaAtras() {
